@@ -1,16 +1,22 @@
-# resource "null_resource" "previous" {}
+resource "random_integer" "priority" {
+  min = 120
+  max = 240
+}
 
-# resource "time_sleep" "wait_30_seconds" {
-#   depends_on = [null_resource.previous]
 
-#   create_duration = "240s"
-# }
+resource "null_resource" "previous" {}
 
-# # This resource will create (at least) 30 seconds after null_resource.previous
-# resource "null_resource" "next" {
-#   depends_on = [time_sleep.wait_30_seconds]
-# }
+resource "time_sleep" "wait_x_seconds" {
+  depends_on = [null_resource.previous]
 
-# resource "null_resource" "next2" {
-#   depends_on = [time_sleep.wait_30_seconds]
-# }
+  create_duration = "${random_integer.priority}s"
+}
+
+# This resource will create (at least) 30 seconds after null_resource.previous
+resource "null_resource" "next" {
+  depends_on = [time_sleep.wait_x_seconds]
+}
+
+resource "null_resource" "next2" {
+  depends_on = [time_sleep.wait_x_seconds]
+}
